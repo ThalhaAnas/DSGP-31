@@ -127,6 +127,7 @@ df["is_high_traffic"] = (df["traffic_level"] == "high").astype(int)
 
 df["system_type"] = "fixed"
 
+
 # SAVE OUTPUT
 
 df.to_csv(OUTPUT_FILE, index=False)
