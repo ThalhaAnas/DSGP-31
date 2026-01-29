@@ -34,3 +34,21 @@ X_test_scaled = scaler.transform(X_test)
 log_reg = LogisticRegression(class_weight="balanced", max_iter=1000)
 
 log_reg.fit(X_train_scaled, y_train)
+
+# Evaluate model
+y_pred = log_reg.predict(X_test_scaled)
+print("Confusion Matrix")
+print(confusion_matrix(y_test, y_pred))
+
+print("\nClassification Report")
+print(classification_report(y_test, y_pred))
+
+#Interpret coefficients
+#Helps to identify factors that increase congestion risk, which matter most
+
+coef_df = pd.DataFrame({
+    "Feature": features,
+    "Coefficient": log_reg.coef_[0]
+})
+
+print(coef_df)
