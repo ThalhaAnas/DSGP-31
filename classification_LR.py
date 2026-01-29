@@ -28,3 +28,9 @@ scaler = StandardScaler()
 
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
+
+# Train Logistic Regression Model
+
+log_reg = LogisticRegression(class_weight="balanced", max_iter=1000)
+
+log_reg.fit(X_train_scaled, y_train)
