@@ -20,3 +20,24 @@ rf = RandomForestClassifier(n_estimators=200, max_depth=10, min_samples_split=10
                             class_weight="balanced", random_state=42, n_jobs=-1)
 
 rf.fit(X_train, y_train)
+
+
+#model evaluation
+
+y_pred = rf.predict(X_test)
+
+print("\nConfusion Matrix(Random Forest):")
+print(confusion_matrix(y_test, y_pred))
+
+print("\nClassification Report(Random Forest):")
+print(classification_report(y_test, y_pred))
+
+#feature importance
+
+importance_df = pd.DataFrame({
+    "Feature": features,
+    "Importance": rf.feature_importances_
+}).sort_values(by="Importance", ascending=False)
+
+print("Feature Importance(Random Forest):")
+print(importance_df)
