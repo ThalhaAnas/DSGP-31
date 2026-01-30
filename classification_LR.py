@@ -6,14 +6,17 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix
 
-df = pd.read_csv("component1_enriched_fixed.csv")
+df = pd.read_csv("component1_merged.csv")
 
-print(df.columns)
-print(df.head())
+df["system_encoded"] = df["system_type"].map({
+    "fixed": 0,
+    "adaptive": 1
+})
+
 
 # Select features and target
 
-features = ["vehicle_count", "avg_waiting_time", "avg_time_loss"]
+features = ["vehicle_count", "avg_waiting_time", "avg_time_loss", "system_encoded"]
 
 x = df[features]
 y = df["is_high_traffic"]
@@ -37,10 +40,11 @@ log_reg.fit(X_train_scaled, y_train)
 
 # Evaluate model
 y_pred = log_reg.predict(X_test_scaled)
-print("Confusion Matrix")
+
+print("Confusion Matrix (Logistic Regression):")
 print(confusion_matrix(y_test, y_pred))
 
-print("\nClassification Report")
+print("\nClassification Report (Logistic Regression):")
 print(classification_report(y_test, y_pred))
 
 #Interpret coefficients
