@@ -16,3 +16,12 @@ y = df["is_high traffic"]
 
 #train-test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+#Train DT model
+
+dt = DecisionTreeClassifier(
+    max_depth=5,
+    min_samples_leaf=20,
+    class_weight="balanced",
+    random_state=42,
+)
