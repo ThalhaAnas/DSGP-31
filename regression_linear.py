@@ -39,3 +39,14 @@ X_test_scaled = scaler.transform(X_test)
 
 lr = LinearRegression()
 lr.fit(X_train_scaled, y_train)
+
+#prediction
+y_pred = lr.predict(X_test_scaled)
+
+#evaluation
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+r2 = r2_score(y_test, y_pred)
+
+print("Linear Regression results:")
+print(f"RMSE: {rmse:.2f}")
+print(f"R2: {r2:.3f}")
