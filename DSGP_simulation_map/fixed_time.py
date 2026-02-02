@@ -30,4 +30,16 @@ MEDIUM_YELLOW = 4
 MINOR_YELLOW = 3
 
 
+def run():
+    # Start SUMO
+    traci.start([
+        SUMO_BINARY,
+        "-c", SUMO_CONFIG,
+        "--tripinfo-output", "tripinfo_fixed.xml"
+    ])
+
+    traffic_lights = traci.trafficlight.getIDList()
+    signal_log = []
+
+    print("Tuned fixed-time started. TLS count:", len(traffic_lights))
 
