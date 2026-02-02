@@ -29,7 +29,6 @@ MAJOR_YELLOW = 4
 MEDIUM_YELLOW = 4
 MINOR_YELLOW = 3
 
-
 def run():
     # Start SUMO
     traci.start([
