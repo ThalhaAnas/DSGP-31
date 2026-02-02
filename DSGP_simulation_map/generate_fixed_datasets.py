@@ -77,4 +77,4 @@ for trip in root.findall("tripinfo"):
 pd.DataFrame(c2).to_csv("component2_traffic_fixed.csv", index=False)
 pd.DataFrame(c4).to_csv("component4_performance_fixed.csv", index=False)
 
-print("✅ Fixed datasets ready")
+print("Fixed datasets ready")
