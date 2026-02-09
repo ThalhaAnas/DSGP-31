@@ -31,3 +31,32 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=42
 )
 
+# Train model
+rf = RandomForestRegressor(
+    n_estimators=300,
+    max_depth=12,
+    min_samples_split=10,
+    random_state=42,
+    n_jobs=-1
+)
+
+rf.fit(X_train, y_train)
+
+y_pred = rf.predict(X_test)
+
+#evaluation
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+r2 = r2_score(y_test, y_pred)
+
+print("Random Forest Regression Results:")
+print(f"RMSE: {rmse:.2f}")
+print(f"R² Score: {r2:.3f}")
+
+#check feature importance
+importance_df = pd.DataFrame({
+    "Feature": features,
+    "Importance": rf.feature_importances_
+}).sort_values(by="Importance", ascending=False)
+
+print("\nFeature Importance:")
+print(importance_df)
