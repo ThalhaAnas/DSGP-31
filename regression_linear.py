@@ -50,3 +50,15 @@ r2 = r2_score(y_test, y_pred)
 print("Linear Regression results:")
 print(f"RMSE: {rmse:.2f}")
 print(f"R2: {r2:.3f}")
+
+#Coefficients
+
+coef_df = pd.DataFrame(
+    {
+        "feature": features,
+        "coefficient": lr.coef_,
+    }
+)
+
+print("\nCoefficients:")
+print(coef_df)
