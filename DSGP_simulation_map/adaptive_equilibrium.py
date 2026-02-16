@@ -79,7 +79,7 @@ def run():
         "component3_control_adaptive_runtime.csv", index=False
     )
 
-    print("✅ Adaptive simulation finished")
+    print("Adaptive simulation finished")
 
 
 if __name__ == "__main__":

@@ -113,4 +113,4 @@ df["system_type"] = "fixed"
 # ===============================
 
 df.to_csv(OUTPUT_FILE, index=False)
-print(f"✅ Fixed enrichment complete → {OUTPUT_FILE}")
+print(f"Fixed enrichment complete → {OUTPUT_FILE}")

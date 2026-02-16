@@ -60,4 +60,4 @@ for trip in root.findall("tripinfo"):
 pd.DataFrame(c2).to_csv("component2_traffic_adaptive.csv", index=False)
 pd.DataFrame(c4).to_csv("component4_performance_adaptive.csv", index=False)
 
-print("✅ Adaptive datasets ready")
+print("Adaptive datasets ready")

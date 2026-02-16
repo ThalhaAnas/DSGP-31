@@ -5,6 +5,7 @@ import pandas as pd
 FIXED-TIME TRAFFIC SIGNAL CONTROLLER (TUNED BASELINE)
 
 - Static (non-adaptive)
+
 - Different green times for major vs minor junctions
 - Reflects real-world fixed-time signal plans
 - Acts as a FAIR baseline for comparison

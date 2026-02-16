@@ -73,4 +73,4 @@ for name, col in kpis.items():
 # ===============================
 
 pd.DataFrame(rows).to_csv("kpi_comparison_summary.csv", index=False)
-print("\n✅ KPI comparison complete. Summary saved.")
+print("\n KPI comparison complete. Summary saved.")
