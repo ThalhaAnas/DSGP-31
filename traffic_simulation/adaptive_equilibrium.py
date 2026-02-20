@@ -17,3 +17,6 @@ LOG_INTERVAL = 30
 MAX_ADJUST = 0.05
 MIN_GREEN = 5
 
+def junction_pressure(tls):
+    lanes = traci.trafficlight.getControlledLanes(tls)
+    return sum(traci.lane.getLastStepHaltingNumber(l) for l in lanes)
