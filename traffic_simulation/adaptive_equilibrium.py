@@ -48,3 +48,13 @@ def run():
 
             if not greens:
                 continue
+
+            main_green = max(greens, key=lambda p: p.duration)
+            delta = int(main_green.duration * MAX_ADJUST)
+
+            if pressures[tls] > avg_pressure:
+                main_green.duration += delta
+            else:
+                main_green.duration = max(MIN_GREEN, main_green.duration - delta)
+
+            traci.trafficlight.setProgramLogic(tls, logic)
