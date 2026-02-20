@@ -58,3 +58,18 @@ def run():
                 main_green.duration = max(MIN_GREEN, main_green.duration - delta)
 
             traci.trafficlight.setProgramLogic(tls, logic)
+
+            signal_log.append({
+                "time": time,
+                "traffic_light_id": tls,
+                "phase_duration": main_green.duration,
+                "green_count": main_green.state.count("G") + main_green.state.count("g"),
+                "yellow_count": main_green.state.count("y"),
+                "red_count": main_green.state.count("r"),
+                "junction_pressure": pressures[tls],
+                "average_network_pressure": avg_pressure,
+                "control_type": "adaptive"
+            })
+
+    traci.close()
+
