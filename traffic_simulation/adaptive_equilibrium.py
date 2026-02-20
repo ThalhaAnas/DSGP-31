@@ -73,3 +73,8 @@ def run():
 
     traci.close()
 
+    print(" Adaptive simulation finished")
+
+if __name__ == "__main__":
+    run()
+
