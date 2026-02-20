@@ -38,3 +38,13 @@ def run():
 
         if time % LOG_INTERVAL != 0:
             continue
+
+        pressures = {tls: junction_pressure(tls) for tls in tls_ids}
+        avg_pressure = sum(pressures.values()) / len(pressures)  # compute the average network pressure
+
+        for tls in tls_ids:
+            logic = traci.trafficlight.getAllProgramLogics(tls)[0]
+            greens = [p for p in logic.phases if "G" in p.state]
+
+            if not greens:
+                continue
