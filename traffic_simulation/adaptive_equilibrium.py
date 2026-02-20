@@ -27,3 +27,14 @@ def run():
         "-c", SUMO_CONFIG,
         "--tripinfo-output", "tripinfo_adaptive.xml"
     ])
+
+    tls_ids = traci.trafficlight.getIDList()
+    signal_log = []
+
+    time = 0
+    while time < SIM_END:
+        traci.simulationStep()
+        time += 1
+
+        if time % LOG_INTERVAL != 0:
+            continue
