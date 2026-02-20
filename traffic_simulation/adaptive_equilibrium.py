@@ -20,3 +20,10 @@ MIN_GREEN = 5
 def junction_pressure(tls):
     lanes = traci.trafficlight.getControlledLanes(tls)
     return sum(traci.lane.getLastStepHaltingNumber(l) for l in lanes)
+
+def run():
+    traci.start([
+        SUMO_BINARY,
+        "-c", SUMO_CONFIG,
+        "--tripinfo-output", "tripinfo_adaptive.xml"
+    ])
