@@ -48,3 +48,27 @@ def run():
         "-c", SUMO_CONFIG,
         "--tripinfo-output", "tripinfo_dynamic.xml"
     ])
+
+    tls_ids = traci.trafficlight.getIDList()
+    time = 0
+
+    while time < SIM_END:
+        traci.simulationStep()
+        time += 1
+
+        for tls in tls_ids:
+
+            logic = traci.trafficlight.getAllProgramLogics(tls)[0]
+            phases = logic.phases
+
+            greens = [p for p in phases if "G" in p.state]
+            if not greens:
+                continue
+
+            main_green = max(greens, key=lambda p: p.duration)
+
+            main_lanes, side_lanes = classify_lanes(tls)
+
+            main_queue = get_lane_queue(main_lanes)
+            side_queue = get_lane_queue(side_lanes)
+            downstream = get_downstream_pressure(main_lanes)
