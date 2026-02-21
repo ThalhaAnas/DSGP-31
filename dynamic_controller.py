@@ -34,3 +34,10 @@ def classify_lanes(tls_id):
             side_lanes.extend(lns)
 
     return main_lanes, side_lanes
+
+def get_downstream_pressure(lanes):
+    pressure = 0
+    for lane in lanes:
+        edge = lane.split("_")[0]
+        pressure += traci.edge.getLastStepHaltingNumber(edge)
+    return pressure
