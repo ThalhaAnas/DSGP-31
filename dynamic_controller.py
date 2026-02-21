@@ -94,3 +94,12 @@ def run():
                     main_green.duration - REDUCE_STEP
                 )
 
+                traci.trafficlight.setProgramLogic(tls, logic)
+
+            traci.close()
+
+            print("✅ Dynamic simulation finished at 3600 seconds")
+
+        if __name__ == "__main__":
+            run()
+
