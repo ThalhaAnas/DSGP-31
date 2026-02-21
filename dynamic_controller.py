@@ -72,3 +72,12 @@ def run():
             main_queue = get_lane_queue(main_lanes)
             side_queue = get_lane_queue(side_lanes)
             downstream = get_downstream_pressure(main_lanes)
+
+            if main_queue > MAIN_CLEAR_THRESHOLD and side_queue < SIDE_QUEUE_THRESHOLD:
+                main_green.duration += 5
+
+            elif side_queue >= SIDE_QUEUE_THRESHOLD:
+                main_green.duration = max(MIN_GREEN, SIDE_RELIEF_TIME)
+
+            else:
+                main_green.duration = max(MIN_GREEN, main_green.duration)
