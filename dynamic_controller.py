@@ -12,3 +12,25 @@ SIDE_RELIEF_TIME = 25
 
 def get_lane_queue(lanes):
     return sum(traci.lane.getLastStepHaltingNumber(l) for l in lanes)
+
+def classify_lanes(tls_id):
+    lanes = traci.trafficlight.getControlledLanes(tls_id)
+    edge_map = {}
+
+    for lane in lanes:
+        edge = lane.split("_")[0]
+        edge_map.setdefault(edge, []).append(lane)
+
+    sorted_edges = sorted(edge_map.items(),
+                          key=lambda x: len(x[1]),
+                          reverse=True)
+
+    main_lanes = []
+    side_lanes = []
+
+    if sorted_edges:
+        main_lanes = sorted_edges[0][1]
+        for _, lns in sorted_edges[1:]:
+            side_lanes.extend(lns)
+
+    return main_lanes, side_lanes
