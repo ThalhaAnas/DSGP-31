@@ -10,6 +10,10 @@ MAIN_CLEAR_THRESHOLD = 5
 SIDE_QUEUE_THRESHOLD = 8
 SIDE_RELIEF_TIME = 25
 
+
+DOWNSTREAM_FACTOR = 1.5
+REDUCE_STEP = 3
+
 def get_lane_queue(lanes):
     return sum(traci.lane.getLastStepHaltingNumber(l) for l in lanes)
 
@@ -81,3 +85,12 @@ def run():
 
             else:
                 main_green.duration = max(MIN_GREEN, main_green.duration)
+
+
+
+            if downstream > main_queue * DOWNSTREAM_FACTOR:
+                main_green.duration = max(
+                    MIN_GREEN,
+                    main_green.duration - REDUCE_STEP
+                )
+
