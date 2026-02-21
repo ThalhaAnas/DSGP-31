@@ -41,3 +41,10 @@ def get_downstream_pressure(lanes):
         edge = lane.split("_")[0]
         pressure += traci.edge.getLastStepHaltingNumber(edge)
     return pressure
+
+def run():
+    traci.start([
+        SUMO_BINARY,
+        "-c", SUMO_CONFIG,
+        "--tripinfo-output", "tripinfo_dynamic.xml"
+    ])
