@@ -10,14 +10,16 @@ MAIN_CLEAR_THRESHOLD = 5
 SIDE_QUEUE_THRESHOLD = 8
 SIDE_RELIEF_TIME = 25
 
+DOWNSTREAM_FACTOR = 1.5   # Downstream must be 50% worse to trigger
+REDUCE_STEP = 3           # Gentle green reduction
 
-DOWNSTREAM_FACTOR = 1.5
-REDUCE_STEP = 3
 
 def get_lane_queue(lanes):
     return sum(traci.lane.getLastStepHaltingNumber(l) for l in lanes)
 
+
 def classify_lanes(tls_id):
+
     lanes = traci.trafficlight.getControlledLanes(tls_id)
     edge_map = {}
 
@@ -40,13 +42,23 @@ def classify_lanes(tls_id):
     return main_lanes, side_lanes
 
 def get_downstream_pressure(lanes):
+    """
+    Stable downstream approximation:
+    Count halted vehicles on main edges
+    """
     pressure = 0
     for lane in lanes:
         edge = lane.split("_")[0]
         pressure += traci.edge.getLastStepHaltingNumber(edge)
     return pressure
 
+
+# ===============================
+# MAIN CONTROLLER
+# ===============================
+
 def run():
+
     traci.start([
         SUMO_BINARY,
         "-c", SUMO_CONFIG,
@@ -54,9 +66,13 @@ def run():
     ])
 
     tls_ids = traci.trafficlight.getIDList()
+
+    print("Dynamic (tuned) started. Junctions:", len(tls_ids))
+
     time = 0
 
     while time < SIM_END:
+
         traci.simulationStep()
         time += 1
 
@@ -77,6 +93,10 @@ def run():
             side_queue = get_lane_queue(side_lanes)
             downstream = get_downstream_pressure(main_lanes)
 
+            # =====================================================
+            # STEP 1: APPLY MANUAL BASE LOGIC
+            # =====================================================
+
             if main_queue > MAIN_CLEAR_THRESHOLD and side_queue < SIDE_QUEUE_THRESHOLD:
                 main_green.duration += 5
 
@@ -86,7 +106,9 @@ def run():
             else:
                 main_green.duration = max(MIN_GREEN, main_green.duration)
 
-
+            # =====================================================
+            # STEP 2: DOWNSTREAM PROTECTION (ONLY IF SEVERE)
+            # =====================================================
 
             if downstream > main_queue * DOWNSTREAM_FACTOR:
                 main_green.duration = max(
@@ -94,12 +116,12 @@ def run():
                     main_green.duration - REDUCE_STEP
                 )
 
-                traci.trafficlight.setProgramLogic(tls, logic)
+            traci.trafficlight.setProgramLogic(tls, logic)
 
-            traci.close()
+    traci.close()
 
-            print("✅ Dynamic simulation finished at 3600 seconds")
+    print("✅ Dynamic simulation finished at 3600 seconds")
 
-        if __name__ == "__main__":
-            run()
 
+if __name__ == "__main__":
+    run()
