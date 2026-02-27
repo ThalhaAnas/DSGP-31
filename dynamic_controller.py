@@ -3,14 +3,14 @@ import pandas as pd
 
 SUMO_BINARY = "sumo-gui"
 SUMO_CONFIG = "simulation_map.sumocfg"
-SIM_END = 3600
+SIM_END = 86400
 
 MIN_GREEN = 10
 MAIN_CLEAR_THRESHOLD = 5
 SIDE_QUEUE_THRESHOLD = 8
 SIDE_RELIEF_TIME = 25
 
-DOWNSTREAM_FACTOR = 1.5   # Downstream must be 50% worse to trigger
+DOWNSTREAM_FACTOR = 1.5
 REDUCE_STEP = 3           # Gentle green reduction
 
 
