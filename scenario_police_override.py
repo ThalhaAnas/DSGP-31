@@ -21,4 +21,21 @@ MIN_GREEN = 5
 OVERRIDE_START = 600
 OVERRIDE_END = 780
 
+def junction_pressure(tls):
+    lanes = traci.trafficlight.getControlledLanes(tls)
+    return sum(traci.lane.getLastStepHaltingNumber(l) for l in lanes)
 
+
+def run():
+    traci.start([
+        SUMO_BINARY, "-c", SUMO_CONFIG, "--tripinfo-output", "tripinfo_scenario.xml"
+    ])
+
+    tls_ids = traci.trafficlight.getIDList()
+    target_tls = tls_ids[0]  # The junction the police officer takes over
+
+    print(f"Simulation Started. Police officer will take over {target_tls} at t={OVERRIDE_START}s")
+
+
+if __name__ == "__main__":
+    run()
