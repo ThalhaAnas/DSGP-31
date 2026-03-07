@@ -37,3 +37,18 @@ rf = RandomForestClassifier(
 )
 
 rf.fit(X_train, y_train)
+
+# Prediction
+y_pred = rf.predict(X_test)
+y_prob = rf.predict_proba(X_test)[:,1]
+
+# Evaluation
+print("\nConfusion Matrix:")
+cm = confusion_matrix(y_test, y_pred)
+print(cm)
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+auc_score = roc_auc_score(y_test, y_prob)
+print("\nROC AUC Score:", auc_score)
