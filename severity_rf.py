@@ -77,3 +77,16 @@ plt.title("Severity Prediction Confusion Matrix")
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.show()
+
+# Feature Importance
+importance_df = pd.DataFrame({
+    "Feature": X.columns,
+    "Importance": rf.feature_importances_
+}).sort_values(by="Importance", ascending=False)
+
+print("\nFeature Importance:")
+print(importance_df)
+
+sns.barplot(x="Importance", y="Feature", data=importance_df)
+plt.title("Severity Model Feature Importance")
+plt.show()
