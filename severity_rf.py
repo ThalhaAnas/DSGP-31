@@ -39,3 +39,23 @@ df = df.drop(columns=[
 # Define Features & Target
 X = df.drop("congestion_level", axis=1)
 y = df["congestion_level"]
+
+# Train/Test Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.3,
+    random_state=42,
+    stratify=y
+)
+
+# Train Random Forest
+rf = RandomForestClassifier(
+    n_estimators=300,
+    max_depth=10,
+    min_samples_split=10,
+    class_weight="balanced",
+    random_state=42,
+    n_jobs=-1
+)
+
+rf.fit(X_train, y_train)
