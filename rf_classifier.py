@@ -52,3 +52,23 @@ print(classification_report(y_test, y_pred))
 
 auc_score = roc_auc_score(y_test, y_prob)
 print("\nROC AUC Score:", auc_score)
+
+# Confusion Matrix Plot
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
+plt.title("Binary Congestion Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+
+# Feature Importance
+importance_df = pd.DataFrame({
+    "Feature": X.columns,
+    "Importance": rf.feature_importances_
+}).sort_values(by="Importance", ascending=False)
+
+print("\nFeature Importance:")
+print(importance_df)
+
+sns.barplot(x="Importance", y="Feature", data=importance_df)
+plt.title("Feature Importance")
+plt.show()
