@@ -23,3 +23,19 @@ df["congestion_level"] = df["waiting_ratio"].apply(severity_level)
 
 print("\nClass Distribution:")
 print(df["congestion_level"].value_counts())
+
+# Remove Leakage Columns
+df = df.drop(columns=[
+    "vehicle_id",
+    "arrival_time",
+    "duration",
+    "waiting_time",
+    "waiting_ratio",
+    "delay_ratio",
+    "is_congested",
+    "system_type"
+], errors="ignore")
+
+# Define Features & Target
+X = df.drop("congestion_level", axis=1)
+y = df["congestion_level"]
