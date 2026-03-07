@@ -59,3 +59,21 @@ rf = RandomForestClassifier(
 )
 
 rf.fit(X_train, y_train)
+
+# Prediction
+y_pred = rf.predict(X_test)
+
+# Evaluation
+print("\nConfusion Matrix:")
+cm = confusion_matrix(y_test, y_pred)
+print(cm)
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# Plot Confusion Matrix
+sns.heatmap(cm, annot=True, fmt="d", cmap="Greens")
+plt.title("Severity Prediction Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
