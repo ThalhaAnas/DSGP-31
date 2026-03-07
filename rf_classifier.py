@@ -9,3 +9,10 @@ from sklearn.metrics import classification_report, confusion_matrix, roc_auc_sco
 
 # Load Dataset
 df = pd.read_csv("processed_dynamic_dataset.csv")
+
+# Remove non-numeric columns
+df = df.drop(columns=["system_type"], errors="ignore")
+
+# Define Features & Target
+X = df.drop("is_congested", axis=1)
+y = df["is_congested"]
