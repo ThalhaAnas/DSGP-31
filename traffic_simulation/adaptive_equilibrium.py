@@ -23,7 +23,7 @@ WAITING_WEIGHT = 0.5
 def get_lane_priority(lane):
 
     """
-    Small road priority weighting using SUMO edge priority.
+    road priority weighting using SUMO edge priority.
     """
 
     edge = traci.lane.getEdgeID(lane)
@@ -57,12 +57,12 @@ def junction_pressure(tls):
 
     for lane in lanes:
 
-        vehicles = traci.lane.getLastStepHaltingNumber(lane)
+        waiting_vehicles = traci.lane.getLastStepHaltingNumber(lane)
         waiting_time = traci.lane.getWaitingTime(lane)
 
-        weight = get_lane_priority(lane)
+        priority_weight = get_lane_priority(lane)
 
-        pressure += (vehicles * weight) + (waiting_time * WAITING_WEIGHT)
+        pressure += (waiting_vehicles * priority_weight) + (waiting_time * WAITING_WEIGHT)
 
     return pressure
 
