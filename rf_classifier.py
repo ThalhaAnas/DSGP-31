@@ -8,7 +8,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, roc_curve
 
 # Load Dataset
-df = pd.read_csv("processed_dynamic_dataset.csv")
+df = pd.read_csv("processed_adaptive_dataset.csv")
 
 # Remove non-numeric columns
 df = df.drop(columns=["system_type"], errors="ignore")
@@ -72,3 +72,10 @@ print(importance_df)
 sns.barplot(x="Importance", y="Feature", data=importance_df)
 plt.title("Feature Importance")
 plt.show()
+
+# -----------------------------
+# Save Model
+# -----------------------------
+joblib.dump(rf, "adaptive_congestion_prediction.pkl")
+
+print("\nBinary congestion model saved!")
