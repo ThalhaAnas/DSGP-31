@@ -1,169 +1,203 @@
+# ================================
 # 1. IMPORT LIBRARIES
-# Core
+# ================================
+
 import pandas as pd
 import numpy as np
-
-# Visualization
 import matplotlib.pyplot as plt
 import seaborn as sns
-
-# Preprocessing
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-
-# Models
-from sklearn.linear_model import LinearRegression
-from sklearn.ensemble import RandomForestRegressor
-
-# Metrics
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import joblib
 
-
-# 2. LOAD DATASET
-df_fixed = pd.read_csv("processed_fixed_dataset.csv")
-
-df_fixed.head()
-
-
-# 3. BASIC CLEANING
-# Remove duplicates
-df_fixed = df_fixed.drop_duplicates()
-
-# Handle missing values
-df_fixed = df_fixed.dropna()
-
-df_fixed.info()
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 
-# 4. DEFINE TARGET VARIABLE
-df_fixed.columns
-target_column = "waiting_time"
+# ================================
+# 2. DEFINE DATASETS
+# ================================
+
+datasets = {
+    "fixed": "processed_fixed_dataset.csv",
+    "adaptive": "final_dataset_adaptive.csv",
+    "dynamic": "final_dataset_dynamic.csv",
+    "manual": "final_dataset_manual.csv"
+}
 
 
-# 5. FEATURE AND TARGET SPLIT
-target_column = "waiting_time"
+# ================================
+# 3. THROUGHPUT MODELLING FUNCTION
+# ================================
 
-X = df_fixed.drop(columns=[
-    target_column,
-    "vehicle_id",
-    "system_type",
-    "congestion"
-])
+def run_throughput_prediction(system_name, dataset_path):
 
-y = df_fixed[target_column]
+    print("\n===============================")
+    print(f"Running model for: {system_name.upper()}")
+    print("===============================")
 
+    # Load dataset
+    df = pd.read_csv(dataset_path)
 
-# 6. TRAIN/TEST SPLIT
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+    # Cleaning
+    df = df.drop_duplicates()
+    df = df.dropna()
 
-# 7. FEATURE SCALING
-scaler = StandardScaler()
+    # Target variable
+    target_column = "waiting_time"
 
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+    # Feature selection
+    target_column = "waiting_time"
 
-# 8. TRAIN MODELS
-# Model 1 - Linear Regression
-lr_model = LinearRegression()
-lr_model.fit(X_train_scaled, y_train)
+    X = df.drop(
+        columns=[target_column, "vehicle_id", "system_type", "congestion"],
+        errors="ignore"
+    )
 
-y_pred_lr = lr_model.predict(X_test_scaled)
+    y = df[target_column]
 
-# Model 2 - Random Forest
-rf_model = RandomForestRegressor(
-    n_estimators=200,
-    max_depth=10,
-    random_state=42
-)
+    # Train-test split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y,
+        test_size=0.2,
+        random_state=42
+    )
 
-rf_model.fit(X_train, y_train)
-y_pred_rf = rf_model.predict(X_test)
+    # Feature scaling
+    scaler = StandardScaler()
 
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
 
-# 9. EVALUATION FUNCTION
-def evaluate_model(y_true, y_pred, model_name):
+    # ================================
+    # 4. TRAIN MODEL
+    # ================================
 
-    mae = mean_absolute_error(y_true, y_pred)
-    rmse = np.sqrt(mean_squared_error(y_true, y_pred))
-    r2 = r2_score(y_true, y_pred)
+    rf_model = RandomForestRegressor(
+        n_estimators=200,
+        max_depth=10,
+        random_state=42
+    )
 
-    print(f"\n{model_name} Performance:")
+    rf_model.fit(X_train, y_train)
+
+    # Predictions
+    y_pred = rf_model.predict(X_test)
+
+    # ================================
+    # TRAIN / TEST R2 SCORE
+    # ================================
+
+    train_r2 = rf_model.score(X_train, y_train)
+    test_r2 = rf_model.score(X_test, y_test)
+
+    print("Train R2:", round(train_r2, 3))
+    print("Test R2 :", round(test_r2, 3))
+
+    # ================================
+    # 5. MODEL EVALUATION
+    # ================================
+
+    mae = mean_absolute_error(y_test, y_pred)
+    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+    r2 = r2_score(y_test, y_pred)
+
     print("MAE :", round(mae, 3))
     print("RMSE:", round(rmse, 3))
-    print("R²  :", round(r2, 3))
-
-    return mae, rmse, r2
-
-# 10. EVALUATE BOTH MODELS
-mae_lr, rmse_lr, r2_lr = evaluate_model(y_test, y_pred_lr, "Linear Regression")
-mae_rf, rmse_rf, r2_rf = evaluate_model(y_test, y_pred_rf, "Random Forest")
+    print("R2  :", round(r2, 3))
 
 
-# 11. PREDICTION VS ACTUAL PLOT
-plt.figure()
-plt.scatter(y_test, y_pred_rf)
-plt.xlabel("Actual Flow")
-plt.ylabel("Predicted Flow")
-plt.title("Random Forest - Actual vs Predicted")
-plt.show()
+    # ================================
+    # 6. VISUALIZATION
+    # ================================
 
-# 11.1 RESIDUAL PLOT
-residuals = y_test - y_pred_rf
-
-plt.figure()
-plt.scatter(y_pred_rf, residuals)
-plt.axhline(y=0, color='red')
-plt.xlabel("Predicted Waiting Time")
-plt.ylabel("Residuals")
-plt.title("Residual Plot")
-plt.show()
+    # Actual vs Predicted
+    plt.figure()
+    plt.scatter(y_test, y_pred)
+    plt.plot([y_test.min(), y_test.max()],
+             [y_test.min(), y_test.max()],
+             color='red')
+    plt.xlabel("Actual Waiting Time")
+    plt.ylabel("Predicted Waiting Time")
+    plt.title(f"{system_name.upper()} - Actual vs Predicted")
+    plt.show()
 
 
-# 12. FEATURE IMPORTANCE
-importances = rf_model.feature_importances_
+    # Residual plot
+    residuals = y_test - y_pred
 
-feature_importance_df = pd.DataFrame({
-    "Feature": X.columns,
-    "Importance": importances
-}).sort_values(by="Importance", ascending=False)
-
-feature_importance_df.head(10)
-
-plt.figure()
-sns.barplot(data=feature_importance_df.head(10),
-            x="Importance",
-            y="Feature")
-plt.title("Top 10 Important Features")
-plt.show()
+    plt.figure()
+    plt.scatter(y_pred, residuals)
+    plt.axhline(y=0, color='red')
+    plt.xlabel("Predicted Waiting Time")
+    plt.ylabel("Residuals")
+    plt.title(f"{system_name.upper()} - Residual Plot")
+    plt.show()
 
 
-# 13. STORE RESULTS
-results = pd.DataFrame({
-    "System": ["Fixed"],
-    "Model": ["Random Forest"],
-    "MAE": [mae_rf],
-    "RMSE": [rmse_rf],
-    "R2": [r2_rf]
-})
+    # ================================
+    # 7. FEATURE IMPORTANCE
+    # ================================
 
-print(results)
+    importances = rf_model.feature_importances_
 
-# ------------------------------
-# SAVE MODEL
-# ------------------------------
+    feature_importance_df = pd.DataFrame({
+        "Feature": X.columns,
+        "Importance": importances
+    }).sort_values(by="Importance", ascending=False)
 
-joblib.dump(rf_model, "fixed_throughput_prediction.pkl")
-joblib.dump(scaler, "throughput_scaler.pkl")
-
-print("\nThroughput prediction model saved successfully!")
-
-
+    plt.figure()
+    sns.barplot(
+        data=feature_importance_df.head(10),
+        x="Importance",
+        y="Feature"
+    )
+    plt.title(f"{system_name.upper()} - Feature Importance")
+    plt.show()
 
 
+    # ================================
+    # 8. SAVE MODEL
+    # ================================
+
+    model_filename = f"{system_name}_throughput_prediction.pkl"
+    scaler_filename = f"{system_name}_throughput_scaler.pkl"
+
+    joblib.dump(rf_model, model_filename)
+    joblib.dump(scaler, scaler_filename)
+
+    print(f"\nSaved model: {model_filename}")
+
+    # Return evaluation results
+    return {
+        "System": system_name,
+        "MAE": mae,
+        "RMSE": rmse,
+        "R2": r2
+    }
 
 
+# ================================
+# 9. RUN MODELS FOR ALL DATASETS
+# ================================
+
+results_list = []
+
+for system_name, dataset_path in datasets.items():
+
+    result = run_throughput_prediction(system_name, dataset_path)
+
+    results_list.append(result)
 
 
+# ================================
+# 10. FINAL COMPARISON TABLE
+# ================================
+
+results_df = pd.DataFrame(results_list)
+
+print("\n===================================")
+print("FINAL THROUGHPUT PREDICTION RESULTS")
+print("===================================")
+
+print(results_df)
