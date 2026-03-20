@@ -64,5 +64,24 @@ def dashboard():
         "waiting_ratio": 0.3,
         "delay_ratio": 0.3
     }
+    if request.method == "POST":
+
+        for key in form_data:
+            form_data[key] = float(request.form[key])
+
+        # CONGESTION
+        cong_input = np.array([[
+            form_data["depart_time"],
+            form_data["time_loss"],
+            form_data["route_length"],
+            form_data["average_speed"]
+        ]])
+
+        congestion = {
+            "adaptive": int(adaptive_cong.predict(cong_input)[0]),
+            "fixed": int(fixed_cong.predict(cong_input)[0]),
+            "manual": int(manual_cong.predict(cong_input)[0]),
+            "dynamic": int(dynamic_cong.predict(cong_input)[0])
+        }
 
 
