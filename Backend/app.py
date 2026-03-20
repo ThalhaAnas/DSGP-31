@@ -153,3 +153,6 @@ def dashboard():
         }
 
     return render_template("dashboard.html", form_data=form_data, results=results)
+
+if __name__ == "__main__":
+    app.run(debug=True)
