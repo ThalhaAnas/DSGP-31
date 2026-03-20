@@ -99,4 +99,25 @@ def dashboard():
             "dynamic": dynamic_wait.predict(wait_input)[0]
         }
 
+        # THROUGHPUT
+        tp_input = np.array([[
+            form_data["depart_time"],
+            form_data["arrival_time"],
+            form_data["duration"],
+            form_data["time_loss"],
+            form_data["route_length"],
+            form_data["average_speed"],
+            form_data["waiting_ratio"],
+            form_data["delay_ratio"]
+        ]])
+
+        throughput = {
+            "adaptive": adaptive_tp.predict(tp_input)[0],
+            "fixed": fixed_tp.predict(tp_input)[0],
+            "manual": manual_tp.predict(tp_input)[0],
+            "dynamic": dynamic_tp.predict(tp_input)[0]
+        }
+
+
+
 
