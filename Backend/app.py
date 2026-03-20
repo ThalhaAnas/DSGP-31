@@ -118,6 +118,27 @@ def dashboard():
             "dynamic": dynamic_tp.predict(tp_input)[0]
         }
 
+        # SPEED (uses predicted waiting)
+        speed = {}
 
+        for system in ["adaptive", "fixed", "manual", "dynamic"]:
+
+            speed_input = np.array([[
+                form_data["depart_time"],
+                form_data["arrival_time"],
+                form_data["duration"],
+                waiting[system],  # KEY PART
+                form_data["time_loss"],
+                form_data["route_length"]
+            ]])
+
+            if system == "adaptive":
+                speed[system] = adaptive_speed.predict(speed_input)[0]
+            elif system == "fixed":
+                speed[system] = fixed_speed.predict(speed_input)[0]
+            elif system == "manual":
+                speed[system] = manual_speed.predict(speed_input)[0]
+            else:
+                speed[system] = dynamic_speed.predict(speed_input)[0]
 
 
