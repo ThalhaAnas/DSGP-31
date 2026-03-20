@@ -47,3 +47,22 @@ def login():
 
     return render_template("login.html")
 
+# Dashboard
+
+@app.route("/dashboard", methods=["GET","POST"])
+def dashboard():
+    results = None
+
+    # Default values
+    form_data = {
+        "depart_time": 500,
+        "arrival_time": 800,
+        "duration": 300,
+        "route_length": 1500,
+        "average_speed": 10,
+        "time_loss": 80,
+        "waiting_ratio": 0.3,
+        "delay_ratio": 0.3
+    }
+
+
