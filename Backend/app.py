@@ -36,3 +36,14 @@ adaptive_speed = joblib.load("speed_prediction_model_adaptive.pkl")
 fixed_speed = joblib.load("speed_prediction_model_fixed.pkl")
 manual_speed = joblib.load("speed_prediction_model_manual.pkl")
 dynamic_speed = joblib.load("speed_prediction_model_dynamic.pkl")
+
+# Login
+@app.route("/", methods=["GET","POST"])
+def login():
+
+    if request.method == "POST":
+        if request.form["username"] in USERS and USERS[request.form["username"]] == request.form["password"]:
+            return redirect(url_for("dashboard"))
+
+    return render_template("login.html")
+
