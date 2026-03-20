@@ -141,4 +141,15 @@ def dashboard():
             else:
                 speed[system] = dynamic_speed.predict(speed_input)[0]
 
+        # BEST SYSTEM
+        best_system = min(waiting, key=waiting.get)
 
+        results = {
+            "congestion": congestion,
+            "waiting": waiting,
+            "throughput": throughput,
+            "speed": speed,
+            "best_system": best_system.capitalize()
+        }
+
+    return render_template("dashboard.html", form_data=form_data, results=results)
