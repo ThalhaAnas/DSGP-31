@@ -84,4 +84,19 @@ def dashboard():
             "dynamic": int(dynamic_cong.predict(cong_input)[0])
         }
 
+        # WAITING
+        wait_input = np.array([[
+            form_data["duration"],
+            form_data["route_length"],
+            form_data["average_speed"],
+            form_data["time_loss"]
+        ]])
+
+        waiting = {
+            "adaptive": adaptive_wait.predict(wait_input)[0],
+            "fixed": fixed_wait.predict(wait_input)[0],
+            "manual": manual_wait.predict(wait_input)[0],
+            "dynamic": dynamic_wait.predict(wait_input)[0]
+        }
+
 
