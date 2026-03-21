@@ -123,7 +123,7 @@ def run():
 
             traci.trafficlight.setProgramLogic(tls, logic)
 
-            # Logging
+            # Lo gging
             signal_log.append({
                 "time": time,
                 "traffic_light": tls,
