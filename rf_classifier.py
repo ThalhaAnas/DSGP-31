@@ -5,28 +5,46 @@ import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, roc_curve
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
 
-# Load Dataset
-df = pd.read_csv("processed_adaptive_dataset.csv")
+# -----------------------------
+# LOAD DATASET
+# -----------------------------
+df = pd.read_csv("processed_dynamic_dataset.csv")
 
 # Remove non-numeric columns
 df = df.drop(columns=["system_type"], errors="ignore")
 
-# Define Features & Target
-X = df.drop("is_congested", axis=1)
+# -----------------------------
+# SELECT FEATURES (IMPORTANT)
+# -----------------------------
+features = [
+    "depart_time",
+    "time_loss",
+    "route_length",
+    "average_speed"
+]
+
+X = df[features]
 y = df["is_congested"]
 
-# Train/Test Split
+print("Features used by model:")
+print(X.columns)
+
+# -----------------------------
+# TRAIN TEST SPLIT
+# -----------------------------
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y,
+    X,
+    y,
     test_size=0.3,
     random_state=42,
     stratify=y
 )
 
-
-# Train Random Forest
+# -----------------------------
+# TRAIN RANDOM FOREST
+# -----------------------------
 rf = RandomForestClassifier(
     n_estimators=300,
     max_depth=10,
@@ -38,11 +56,15 @@ rf = RandomForestClassifier(
 
 rf.fit(X_train, y_train)
 
-# Prediction
+# -----------------------------
+# PREDICTIONS
+# -----------------------------
 y_pred = rf.predict(X_test)
 y_prob = rf.predict_proba(X_test)[:,1]
 
-# Evaluation
+# -----------------------------
+# EVALUATION
+# -----------------------------
 print("\nConfusion Matrix:")
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
@@ -53,14 +75,18 @@ print(classification_report(y_test, y_pred))
 auc_score = roc_auc_score(y_test, y_prob)
 print("\nROC AUC Score:", auc_score)
 
-# Confusion Matrix Plot
+# -----------------------------
+# CONFUSION MATRIX PLOT
+# -----------------------------
 sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
 plt.title("Binary Congestion Confusion Matrix")
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.show()
 
-# Feature Importance
+# -----------------------------
+# FEATURE IMPORTANCE
+# -----------------------------
 importance_df = pd.DataFrame({
     "Feature": X.columns,
     "Importance": rf.feature_importances_
@@ -74,8 +100,8 @@ plt.title("Feature Importance")
 plt.show()
 
 # -----------------------------
-# Save Model
+# SAVE MODEL
 # -----------------------------
-joblib.dump(rf, "adaptive_congestion_prediction.pkl")
+joblib.dump(rf, "dynamic_congestion_prediction.pkl")
 
-print("\nBinary congestion model saved!")
+print("\nCongestion model saved successfully!")
