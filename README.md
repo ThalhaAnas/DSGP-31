@@ -88,7 +88,7 @@ pip install -r requirements.txt
 - Vehicle Speed
 
 ## Purpose
-Developed as a final year research thesis project at IIT in collaboration with Robert Gordon University.
+Developed as a second year research thesis project at IIT in collaboration with Robert Gordon University.
 
 ## Authors
 - Thalha Anas
